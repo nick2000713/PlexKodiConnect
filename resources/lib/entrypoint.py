@@ -228,7 +228,8 @@ def show_listing(xml, plex_type=None, section_id=None, synched=True, key=None):
     # Initialization
     widgets.PLEX_TYPE = plex_type
     widgets.SYNCHED = synched
-    if plex_type == v.PLEX_TYPE_EPISODE and key and 'onDeck' in key:
+    if (plex_type == v.PLEX_TYPE_EPISODE and key and
+            ('onDeck' in key or 'continueWatching' in key)):
         widgets.APPEND_SHOW_TITLE = utils.settings('OnDeckTvAppendShow') == 'true'
         widgets.APPEND_SXXEXX = utils.settings('OnDeckTvAppendSeason') == 'true'
     if plex_type == v.PLEX_TYPE_EPISODE and key and 'recentlyAdded' in key:
