@@ -152,9 +152,16 @@ def convert_pkc_to_listitem(pkc_listitem):
     if data['info']:
         listitem.setInfo(**data['info'])
     for stream in data['stream_info']:
-        # Kodi documentation up to date? CAREFUL as type= seems to be cType=
-        # and values= seems to be dictionary=
-        listitem.addStreamInfo(**stream)
+        # Kodi's JSON-RPC streamdetails hold a list of dicts per type (one per
+        # audio/subtitle track), and Kodi 22 only accepts string values here
+        values = stream['dictionary']
+        for entry in values if isinstance(values, list) else [values]:
+            if not isinstance(entry, dict):
+                continue
+            listitem.addStreamInfo(
+                cType=stream['cType'],
+                dictionary={str(k): str(v) for k, v in entry.items()
+                            if v is not None})
     if data['art']:
         listitem.setArt(data['art'])
     for key, value in data['property'].items():
